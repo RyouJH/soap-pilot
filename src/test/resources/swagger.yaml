@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  version: 1.0.0
+servers:
+  - url: http://192.168.2.11/soap
+    x-service-name : WeatherService
+paths:
+  /getWeather:
+    x-soap-port-type: WhetherService
+    x-soap-binding-name: WhetherBinding
+    x-soap-binding-transport: http://schemas.xmlsoap.org/soap/http
+    get:
+      operationId: GetWeatherInfo
+      description: Create Whether Info
+      x-soap-soapAction: http://example.com/GetWeather
+      requestBody:
+        content:
+          application/soap+xml:
+            x-soap-portType-operation-input: GetWeatherRequest
+            x-binding-use: literal
+            schema:
+              $ref: "#/components/schemas/GetWeather"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/soap+xml:
+              x-soap-portType-operation-output: GetWeatherResp
+              schema:
+                $ref: "#/components/schemas/GetCitiesByCountryResponse"
+  /getCitiesByCountryReq:
+    x-soap-port-type: CitiesByCountryService
+    x-soap-binding-name: getCitiesByCountryBinding
+    post:
+      description: getCitiesByCountryReq
+      operationId: getCitiesByCountryRequest
+      x-soap-soapAction: http://example.com/GetCitiesByCountry
+      requestBody:
+        content:
+          application/soap+xml:
+            x-soap-portType-operation-input: GetCitiesByCountryReq
+            schema:
+              $ref: "#/components/schemas/GetCitiesByCountry"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/soap+xml:
+              x-soap-portType-operation-output: GetCitiesByCountryResp
+              schema:
+                $ref: "#/components/schemas/GetCitiesByCountryResponse"
+components:
+  schemas:
+    GetWeather:
+      x-message:
+        - name: GetWeatherRequest
+          part: parameter
+      type: object
+      properties:
+        CityName:
+          type: string
+        CountryName:
+          type: string
+    GetWeatherResponse:
+      x-message:
+        - name: GetWeatherResp
+          part: result
+      type: object
+      properties:
+        GetWeatherResult:
+          type: string
+    GetCitiesByCountry:
+      x-message:
+        - name: GetCitiesByCountryReq
+          part: parameter
+      type: object
+      properties:
+        CountryName:
+          type: string
+    GetCitiesByCountryResponse:
+      x-message:
+        - name: GetCitiesByCountryResp
+          part: result
+      type: object
+      properties:
+        GetCitiesByCountryResult:
+          type: string
+    Users:
+      type: array
+      x-message:
+        - name: users
+          part: request
+      xml:
+        name: users
+        wrapped: true
+      items:
+        type: object
+        xml:
+          name: user
+        properties:
+          id:
+            type: string
+            example: "10091"
+          name:
+            type: string
+            example: "rjh926"
