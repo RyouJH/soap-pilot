@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<wsdl:definitions targetNamespace="http://www.webserviceX.NET" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.webserviceX.NET" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <xs:schema>
+        <xs:element name="GetWeather" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="CityName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="CountryName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="GetWeatherResponse" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="GetWeatherResult" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="GetCitiesByCountry" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="CountryName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="GetCitiesByCountryResponse" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="GetCitiesByCountryResult" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="users" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="user" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+    </xs:schema>
+    <wsdl:message name="GetWeatherRequest">
+        <wsdl:part name="parameter" element="tns:GetWeather"/>
+    </wsdl:message>
+    <wsdl:message name="GetWeatherResp">
+        <wsdl:part name="result" element="tns:GetWeatherResponse"/>
+    </wsdl:message>
+    <wsdl:message name="GetCitiesByCountryReq">
+        <wsdl:part name="parameter" element="tns:GetCitiesByCountry"/>
+    </wsdl:message>
+    <wsdl:message name="GetCitiesByCountryResp">
+        <wsdl:part name="result" element="tns:GetCitiesByCountryResponse"/>
+    </wsdl:message>
+    <wsdl:message name="users">
+        <wsdl:part name="request" element="tns:Users"/>
+    </wsdl:message>
+    <wsdl:portType name="WhetherService">
+        <wsdl:operation name="GetWeatherInfo">
+            <wsdl:input message="tns:GetWeatherRequest"/>
+            <wsdl:output message="GetWeatherResp"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="CitiesByCountryService">
+        <wsdl:operation name="getCitiesByCountryRequest">
+            <wsdl:input message="tns:GetCitiesByCountryReq"/>
+            <wsdl:output message="GetCitiesByCountryResp"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="WhetherBinding" type="tns:WhetherService">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="GetWeatherInfo">
+            <soap:operation soapAction="http://example.com/GetWeather" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="getCitiesByCountryBinding" type="tns:CitiesByCountryService">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getCitiesByCountryRequest">
+            <soap:operation soapAction="http://example.com/GetCitiesByCountry" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="WeatherService">
+        <wsdl:port name="WhetherService" binding="tns:WhetherBinding">
+            <soap:address location="http://192.168.2.11/soap/getWeather"/>
+        </wsdl:port>
+        <wsdl:port name="CitiesByCountryService" binding="tns:getCitiesByCountryBinding">
+            <soap:address location="http://192.168.2.11/soap/getCitiesByCountryReq"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
