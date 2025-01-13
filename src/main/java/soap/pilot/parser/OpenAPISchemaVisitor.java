@@ -12,8 +12,7 @@ import java.util.Stack;
 
 public class OpenAPISchemaVisitor implements SchemaVisitor {
     public Element element;
-    Stack<Element> stack = new Stack<>();
-    boolean isArray;
+    private final Stack<Element> stack = new Stack<>();
 
     @Override
     public void visit(String id, Schema schema) {
@@ -22,33 +21,29 @@ public class OpenAPISchemaVisitor implements SchemaVisitor {
         switch (schema.getType()) {
             case "object":
                 element = new Element();
-                if(stack.size() > 0 && stack.peek().isArray)
+                if(!stack.isEmpty() && stack.peek().isArray)
                     element.maxOccurs = getMaximum(schema);
                 element.name = Optional.ofNullable(schema.getXml()).map(XML::getName).orElse(id);
                 element.complexType = new ComplexType();
                 Set<Entry<String, Schema>> set = schema.getProperties().entrySet();
                 for (Entry<String, Schema> e : set) {
-                    isArray = Optional.ofNullable(e.getValue())
-                            .map(Schema::getType)
-                            .map("array"::equals)
-                            .orElse(false);
                     stack.push(element);
                     visit(e.getKey(), e.getValue());
                     Element child = element;
                     element = stack.pop();
-                    element.complexType.sequence.elements.add(child);
+                    element.complexType.addElement(child);
                 }
                 break;
             case "string":
                 element = new Element();
-                if(stack.size() > 0 && stack.peek().isArray)
+                if(!stack.isEmpty() && stack.peek().isArray)
                     element.maxOccurs = getMaximum(schema);
                 element.name = Optional.ofNullable(schema.getXml()).map(XML::getName).orElse(id);
                 element.type = "xs:string";
                 break;
             case "integer":
                 element = new Element();
-                if(stack.size() > 0 && stack.peek().isArray)
+                if(!stack.isEmpty() && stack.peek().isArray)
                     element.maxOccurs = getMaximum(schema);
                 element.name = Optional.ofNullable(schema.getXml()).map(XML::getName).orElse(id);
                 element.type = "xs:integer";
